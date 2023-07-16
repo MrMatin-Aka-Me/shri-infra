@@ -1,10 +1,6 @@
 name: CI
 
-on:
-  push:
-    branches: '*'
-  pull_request:
-    branches: [ master ]
+on: pull_request
 
 jobs:
   test:
@@ -23,11 +19,13 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
+      - run: git remote set-branches origin master && git fetch
+
       - name: Install dependencies
         run: npm ci
 
       - name: Run linter
-        run: npm run lint-commits
+        run: npx commitlint --from ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }} --to ${{ github.event.pull_request.head.sha }} --verbose
 
       - name: Run tests
         run: npm test
