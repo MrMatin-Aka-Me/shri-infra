@@ -21,6 +21,8 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
+      - run: git remote set-branches origin master && git fetch
+
       - name: Install dependencies
         run: npm ci
 
